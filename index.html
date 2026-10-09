@@ -10,8 +10,8 @@
   <meta property="og:type" content="website">
   <title>JoHan | Video-Conditioned Generative Joint 2D–3D Hand Motion Recovery</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=3">
+  <script src="script.js?v=3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -37,12 +37,12 @@
 
   <section id="videos" class="wrap showcase" aria-labelledby="showcase-title">
     <div class="section-heading"><div><p class="eyebrow">See it in motion</p><h2 id="showcase-title">2D and 3D. One motion.</h2></div><p>Explore aligned joint trajectories and mesh recovery<br>across static and moving camera views.</p></div>
-    <div class="viewer">
+    <div class="viewer" aria-busy="false">
       <div class="viewer-title"><h3 id="sequence-name">HOT3D · Sequence 01</h3><span id="camera-label">Moving camera</span></div>
       <div class="pane-labels"><span><i class="dot dot-2d"></i>2D hand motion <small>Prediction &amp; ground truth</small></span><span><i class="dot dot-3d"></i>3D hand motion <small>Recovered mesh</small></span></div>
       <video id="motion-video" controls muted loop playsinline preload="metadata" poster="assets/hot3d-1.webp" aria-label="HOT3D sequence 01: aligned 2D hand motion and recovered 3D mesh"><source src="assets/hot3d-1.webm" type="video/webm"><source src="assets/hot3d-1.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/hot3d-1.mp4">Download the video</a>.</video>
-      <div class="playback" hidden><button id="play-motion" type="button" aria-label="Play motion video">▶ <span>Play</span></button><button id="restart-motion" class="restart" type="button" aria-label="Restart motion video">↺</button><input id="motion-progress" type="range" min="0" max="1000" step="1" value="0" aria-label="Video position"><output id="motion-time">0:00 / 0:00</output><label for="motion-speed">Speed</label><select id="motion-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></div>
-      <div class="viewer-footer"><p><span class="legend-pred">●</span> Predicted 2D <span class="legend-gt">●</span> Ground-truth 2D</p><p id="video-status" role="status">Choose a sequence to explore.</p></div>
+      <div class="playback" hidden><button id="play-motion" type="button" aria-label="Play motion video">▶ <span>Play</span></button><button id="restart-motion" disabled class="restart" type="button" aria-label="Restart motion video">↺</button><input id="motion-progress" disabled type="range" min="0" max="1000" step="1" value="0" aria-label="Video position"><output id="motion-time">0:00 / 0:00</output><label for="motion-speed">Speed</label><select id="motion-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></div>
+      <div class="viewer-footer"><p><span class="legend-pred">●</span> Predicted 2D <span class="legend-gt">●</span> Ground-truth 2D</p><p id="video-status" role="status">Choose a sequence to explore.</p><a id="open-video" href="assets/hot3d-1.mp4" target="_blank" rel="noopener">Open video ↗</a></div>
     </div>
     <div class="sequence-heading"><span>Choose a sequence</span><span id="sequence-counter">01 / 04</span></div>
     <div class="sequence-selector" role="group" aria-label="Choose a motion sequence">

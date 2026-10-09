@@ -20,6 +20,13 @@ const play = document.getElementById('play-motion');
 const progress = document.getElementById('motion-progress');
 const speed = document.getElementById('motion-speed');
 const status = document.getElementById('video-status');
+const restart = document.getElementById('restart-motion');
+const viewer = document.querySelector('.viewer');
+function setLoading(loading) {
+  viewer.setAttribute('aria-busy', String(loading));
+  progress.disabled = loading;
+  restart.disabled = loading;
+}
 const options = [...document.querySelectorAll('.sequence-option')];
 let selected = 'hot3d-1';
 let playRequest = 0;
@@ -47,10 +54,18 @@ document.getElementById('restart-motion').addEventListener('click', () => { vide
 speed.addEventListener('change', () => { video.playbackRate = Number(speed.value); });
 progress.addEventListener('input', () => { if (Number.isFinite(video.duration)) video.currentTime = video.duration * Number(progress.value) / 1000; });
 video.addEventListener('timeupdate', updateTime);
-video.addEventListener('loadedmetadata', () => { video.playbackRate = Number(speed.value); updateTime(); status.textContent = '2D and 3D views share the same video timeline.'; });
+function onMetadata() {
+  setLoading(false);
+  video.controls = false;
+  video.playbackRate = Number(speed.value);
+  updateTime();
+  status.textContent = '2D and 3D views share the same video timeline.';
+}
+video.addEventListener('loadedmetadata', onMetadata);
+if (video.readyState >= 1) onMetadata(); else setLoading(true);
 video.addEventListener('play', updatePlay);
 video.addEventListener('pause', updatePlay);
-video.addEventListener('error', () => { status.textContent = 'Video unavailable. Please reload or try another sequence.'; video.controls = true; });
+video.addEventListener('error', () => { setLoading(false); progress.disabled = true; restart.disabled = true; status.textContent = 'Video could not load. Try another sequence or use Open video.'; video.controls = true; });
 video.addEventListener('waiting', () => { status.textContent = 'Loading video…'; });
 video.addEventListener('playing', () => { status.textContent = '2D and 3D views share the same video timeline.'; });
 options.forEach((button, index) => button.addEventListener('click', () => {
@@ -69,6 +84,16 @@ options.forEach((button, index) => button.addEventListener('click', () => {
   video.poster = `assets/${selected}.webp`;
   video.querySelectorAll('source').forEach(source => { source.src = `assets/${selected}.${source.type === 'video/webm' ? 'webm' : 'mp4'}`; });
   video.querySelector('a').href = `assets/${selected}.mp4`;
+  document.getElementById('open-video').href = `assets/${selected}.mp4`;
+  setLoading(true);
   video.load(); updateTime(); updatePlay(); status.textContent = 'Loading sequence…';
   if (resume) startPlayback();
+}));
+
+options.forEach((button, index) => button.addEventListener('keydown', event => {
+  if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  event.preventDefault();
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + options.length) % options.length;
+  options[next].focus();
+  options[next].click();
 }));
