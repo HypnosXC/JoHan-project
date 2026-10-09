@@ -19,6 +19,6 @@ Open http://localhost:8765/.
 - `script.js`: accessible dataset tabs, video playback and citation copying.
 - `assets/`: paper, existing research figures and H.264 video demonstrations.
 
-Research figures were exported from the current manuscript. Videos were extracted from the project's existing presentation and transcoded for browser playback; they are not newly generated experimental results. The paper is the supplied preprint PDF. Code and model weights are not part of this website repository.
+Research figures were exported from the current manuscript. Videos were extracted from the project's existing presentation and transcoded for browser playback; they are not newly generated experimental results. Paper links and the citation point to https://arxiv.org/abs/2610.10512. Code and model weights are not part of this website repository.
 
 No analytics or external frontend dependencies are used.
