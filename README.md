@@ -42,3 +42,10 @@ python3 scripts/export_world.py /path/to/04_P0002_65085bfc_f01258-01373.npz asse
 ```
 
 Serve this directory over HTTP; browser module imports cannot run from file://.
+
+The optional reference environment adds a 10 cm XY grid, lighting, shadows,
+and a wrist-to-plane guide. It is a presentation aid, not reconstructed HOT3D
+scene geometry or an estimate of the physical ground plane. Its height is set
+below the complete trajectories of the selected methods and stays fixed during
+playback; changing the comparison selection can reposition this reference.
+The saved hand vertex coordinates are unchanged.

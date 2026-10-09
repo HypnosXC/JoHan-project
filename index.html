@@ -10,10 +10,10 @@
   <meta property="og:type" content="website">
   <title>JoHan | Video-Conditioned Generative Joint 2D–3D Hand Motion Recovery</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
   <script src="script.js?v=3" defer></script>
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js"}}</script>
-  <script type="module" src="world-viewer.js"></script>
+  <script type="module" src="world-viewer.js?v=2"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -62,13 +62,14 @@
         <label class="world-gt"><input type="checkbox" data-world-model="gt" disabled> Ground truth</label>
         <label class="world-hawor"><input type="checkbox" data-world-model="hawor" disabled> HaWoR</label>
         <label><input type="checkbox" id="world-trail" checked> Wrist trajectory</label>
+        <label><input type="checkbox" id="world-environment" checked disabled> Reference environment</label>
         <button type="button" id="world-reset" disabled>Reset view</button>
       </div>
-      <div id="world-canvas"><button type="button" id="world-load">Explore in 3D ↗</button><span class="world-axis-note">World coordinates · metres<br>XYZ axes at the world origin</span></div>
+      <div id="world-canvas"><button type="button" id="world-load">Explore in 3D ↗</button><span class="world-axis-note">World coordinates · metres<br>Reference grid · 10 cm spacing</span></div>
       <div class="world-controls"><button type="button" id="world-play" disabled>Play</button><input type="range" id="world-frame" min="0" max="115" value="0" step="1" disabled aria-label="3D motion frame"><output id="world-count">Frame 0 / 115</output><label>Playback <select id="world-fps"><option value="15" selected>15 fps</option><option value="30">30 fps</option><option value="5">5 fps</option></select></label></div>
       <p id="world-status" role="status">Load the interactive mesh to rotate, zoom, and play the sequence.</p>
     </div>
-    <p class="showcase-note">Selected HOT3D sequence P0002_65085bfc. Meshes retain their world-space motion in the first-aligned evaluation coordinate frame; no per-frame recentering is applied. Lines trace the wrist trajectory. This sequence is independent of the videos above.</p>
+    <p class="showcase-note">Selected HOT3D sequence P0002_65085bfc. Meshes retain their world-space motion in the first-aligned evaluation coordinate frame; no per-frame recentering is applied. Lines trace the wrist trajectory. The reference plane and shadows provide spatial context; they do not reconstruct the physical scene. This sequence is independent of the videos above.</p>
   </section>
 
   <section id="overview" class="wrap teaser-section" aria-label="Overview">
