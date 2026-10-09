@@ -22,3 +22,23 @@ Open http://localhost:8765/.
 Research figures were exported from the current manuscript. Videos were extracted from the project's existing presentation and transcoded for browser playback; they are not newly generated experimental results. Paper links and the citation point to https://arxiv.org/abs/2610.10512. Code and model weights are not part of this website repository.
 
 No analytics or external frontend dependencies are used.
+
+## Interactive HOT3D world-space viewer
+
+The 116-frame P0002_65085bfc example uses existing exported JoHan, HaWoR,
+and ground-truth meshes from the first-aligned world-space evaluation.
+Vertex coordinates are preserved in metres, without per-frame recentering.
+The JoHan export includes the saved world-motion smoothing used by that evaluation.
+Frame labels start at zero; original indices are retained in sequence.json.
+Playback rates are display settings, not a claim about recording frame rate.
+
+`world-viewer.js` uses locally vendored Three.js 0.180.0 (MIT license in
+`vendor/three/LICENSE`). No external CDN or analytics is required. The binary
+assets contain only vertices, wrist positions, and triangle indices; no source
+filesystem paths are published. To regenerate from the existing archive:
+
+```sh
+python3 scripts/export_world.py /path/to/04_P0002_65085bfc_f01258-01373.npz assets/world
+```
+
+Serve this directory over HTTP; browser module imports cannot run from file://.

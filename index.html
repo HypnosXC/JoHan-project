@@ -10,14 +10,16 @@
   <meta property="og:type" content="website">
   <title>JoHan | Video-Conditioned Generative Joint 2D–3D Hand Motion Recovery</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
   <script src="script.js?v=3" defer></script>
+  <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js"}}</script>
+  <script type="module" src="world-viewer.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="brand" href="#" aria-label="JoHan home"><span class="brand-mark" aria-hidden="true">J<span>H</span></span>JoHan</a>
-  <nav aria-label="Main navigation"><a href="#overview">Overview</a><a href="#videos">Videos</a><a href="#method">Method</a></nav>
+  <nav aria-label="Main navigation"><a href="#overview">Overview</a><a href="#videos">Videos</a><a href="#world">Explore 3D</a><a href="#method">Method</a></nav>
   <a class="header-paper" href="https://arxiv.org/abs/2610.10512" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
 </header>
 <main id="main">
@@ -50,6 +52,23 @@
 <button type="button" class="sequence-option" data-sequence="ho3d-1" aria-pressed="false" aria-label="Show HO3D · 01"><img src="assets/ho3d-1.webp" alt="" loading="lazy"><span>HO3D · 01<small>Static camera</small></span></button>
 <button type="button" class="sequence-option" data-sequence="ho3d-2" aria-pressed="false" aria-label="Show HO3D · 02"><img src="assets/ho3d-2.webp" alt="" loading="lazy"><span>HO3D · 02<small>Static camera</small></span></button>
 </div><p class="showcase-note">Both panels show the same frames. The left panel overlays 2D joints; the right panel places the recovered mesh in the camera view.</p>
+  </section>
+
+  <section id="world" class="wrap world-section" aria-labelledby="world-title">
+    <div class="section-heading"><div><p class="eyebrow">Interactive reconstruction</p><h2 id="world-title">Hand motion, in world space.</h2></div><p>Rotate the view. Explore the trajectory.<br>Real HOT3D predictions, across 116 frames.</p></div>
+    <div class="world-viewer">
+      <div class="world-options" role="group" aria-label="Visible reconstructions">
+        <label class="world-ours"><input type="checkbox" data-world-model="ours" checked disabled> JoHan</label>
+        <label class="world-gt"><input type="checkbox" data-world-model="gt" disabled> Ground truth</label>
+        <label class="world-hawor"><input type="checkbox" data-world-model="hawor" disabled> HaWoR</label>
+        <label><input type="checkbox" id="world-trail" checked> Wrist trajectory</label>
+        <button type="button" id="world-reset" disabled>Reset view</button>
+      </div>
+      <div id="world-canvas"><button type="button" id="world-load">Explore in 3D ↗</button><span class="world-axis-note">World coordinates · metres<br>XYZ axes at the world origin</span></div>
+      <div class="world-controls"><button type="button" id="world-play" disabled>Play</button><input type="range" id="world-frame" min="0" max="115" value="0" step="1" disabled aria-label="3D motion frame"><output id="world-count">Frame 0 / 115</output><label>Playback <select id="world-fps"><option value="15" selected>15 fps</option><option value="30">30 fps</option><option value="5">5 fps</option></select></label></div>
+      <p id="world-status" role="status">Load the interactive mesh to rotate, zoom, and play the sequence.</p>
+    </div>
+    <p class="showcase-note">Selected HOT3D sequence P0002_65085bfc. Meshes retain their world-space motion in the first-aligned evaluation coordinate frame; no per-frame recentering is applied. Lines trace the wrist trajectory. This sequence is independent of the videos above.</p>
   </section>
 
   <section id="overview" class="wrap teaser-section" aria-label="Overview">
