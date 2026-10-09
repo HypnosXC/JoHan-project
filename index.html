@@ -21,38 +21,45 @@
   <a class="header-paper" href="https://arxiv.org/abs/2610.10512" target="_blank" rel="noopener">Paper <span aria-hidden="true">↗</span></a>
 </header>
 <main id="main">
-  <section class="hero wrap" aria-labelledby="title">
+  <section class="hero" aria-labelledby="title">
+    <div class="hero-art" aria-hidden="true"><img class="hand hand-a" src="assets/hand-0.png" alt=""><img class="hand hand-b" src="assets/hand-1.png" alt=""><img class="hand hand-c" src="assets/hand-2.png" alt=""><img class="hand hand-d" src="assets/hand-0.png" alt=""></div>
+    <div class="hero-inner wrap">
     <p class="eyebrow">Joint 2D–3D generation · Monocular video</p>
-    <div class="wordmark">Jo<span>Han</span><span class="wordmark-dot">.</span></div>
+    <div class="wordmark" aria-hidden="true">Jo<span>Han</span></div>
     <h1 id="title">Video-Conditioned Generative Joint<br class="desktop-break"> 2D–3D Hand Motion Recovery</h1>
-    <p class="authors">Chen Xu<sup>1</sup><span>·</span>Yunqi Li<sup>1</sup><span>·</span>Binbin Huang<sup>1</sup><span>·</span>Brent Yi<sup>2</sup><span>·</span>Shenghua Gao<sup>1</sup><span>·</span>Yi Ma<sup>1</sup></p>
+    <p class="authors"><span>Chen Xu<sup>1</sup></span><span>Yunqi Li<sup>1</sup></span><span>Binbin Huang<sup>1</sup></span><span>Brent Yi<sup>2</sup></span><span>Shenghua Gao<sup>1</sup></span><span>Yi Ma<sup>1</sup></span></p>
     <p class="affiliations"><sup>1</sup>The University of Hong Kong <span><sup>2</sup>UC Berkeley</span></p>
     <div class="hero-links"><a class="button primary" href="https://arxiv.org/abs/2610.10512" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/></svg>Paper · arXiv</a><a class="button" href="#videos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 11 7-11 7z"/></svg>Watch results</a><span class="release-note">Code &amp; weights coming soon</span></div>
-    <p class="hero-summary">Learning hand motion <strong>directly from video.</strong><br>Generating aligned 2D and 3D trajectories for accurate, smooth reconstruction.</p>
+    <p class="hero-summary">Accurate, smooth hand motion.<br> Generated directly from video.</p>
+    </div>
+  </section>
+
+
+  <section id="videos" class="wrap showcase" aria-labelledby="showcase-title">
+    <div class="section-heading"><div><p class="eyebrow">See it in motion</p><h2 id="showcase-title">2D and 3D. One motion.</h2></div><p>Explore aligned joint trajectories and mesh recovery<br>across static and moving camera views.</p></div>
+    <div class="viewer">
+      <div class="viewer-title"><h3 id="sequence-name">HOT3D · Sequence 01</h3><span id="camera-label">Moving camera</span></div>
+      <div class="pane-labels"><span><i class="dot dot-2d"></i>2D hand motion <small>Prediction &amp; ground truth</small></span><span><i class="dot dot-3d"></i>3D hand motion <small>Recovered mesh</small></span></div>
+      <video id="motion-video" controls muted loop playsinline preload="metadata" poster="assets/hot3d-1.webp" aria-label="HOT3D sequence 01: aligned 2D hand motion and recovered 3D mesh"><source src="assets/hot3d-1.webm" type="video/webm"><source src="assets/hot3d-1.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/hot3d-1.mp4">Download the video</a>.</video>
+      <div class="playback" hidden><button id="play-motion" type="button" aria-label="Play motion video">▶ <span>Play</span></button><button id="restart-motion" class="restart" type="button" aria-label="Restart motion video">↺</button><input id="motion-progress" type="range" min="0" max="1000" step="1" value="0" aria-label="Video position"><output id="motion-time">0:00 / 0:00</output><label for="motion-speed">Speed</label><select id="motion-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></div>
+      <div class="viewer-footer"><p><span class="legend-pred">●</span> Predicted 2D <span class="legend-gt">●</span> Ground-truth 2D</p><p id="video-status" role="status">Choose a sequence to explore.</p></div>
+    </div>
+    <div class="sequence-heading"><span>Choose a sequence</span><span id="sequence-counter">01 / 04</span></div>
+    <div class="sequence-selector" role="group" aria-label="Choose a motion sequence">
+<button type="button" class="sequence-option" data-sequence="hot3d-1" aria-pressed="true" aria-label="Show HOT3D · 01"><img src="assets/hot3d-1.webp" alt="" loading="lazy"><span>HOT3D · 01<small>Moving camera</small></span></button>
+<button type="button" class="sequence-option" data-sequence="hot3d-2" aria-pressed="false" aria-label="Show HOT3D · 02"><img src="assets/hot3d-2.webp" alt="" loading="lazy"><span>HOT3D · 02<small>Moving camera</small></span></button>
+<button type="button" class="sequence-option" data-sequence="ho3d-1" aria-pressed="false" aria-label="Show HO3D · 01"><img src="assets/ho3d-1.webp" alt="" loading="lazy"><span>HO3D · 01<small>Static camera</small></span></button>
+<button type="button" class="sequence-option" data-sequence="ho3d-2" aria-pressed="false" aria-label="Show HO3D · 02"><img src="assets/ho3d-2.webp" alt="" loading="lazy"><span>HO3D · 02<small>Static camera</small></span></button>
+</div><p class="showcase-note">Both panels show the same frames. The left panel overlays 2D joints; the right panel places the recovered mesh in the camera view.</p>
   </section>
 
   <section id="overview" class="wrap teaser-section" aria-label="Overview">
+    <div class="section-heading"><div><p class="eyebrow">01 / Overview</p><h2>Joint generation, from video.</h2></div><a class="text-link" href="assets/teaser.webp" target="_blank" rel="noopener">View full-resolution figure ↗</a></div>
     <figure class="teaser">
       <a href="assets/teaser.webp" target="_blank" rel="noopener" class="figure-link" aria-label="Open the full-size JoHan teaser"><img src="assets/teaser.webp" width="2400" height="1176" fetchpriority="high" alt="JoHan directly generates joint local 2D–3D motion before global recovery. Qualitative comparisons with Dyn-HaMR on HO3D and HaWoR on HOT3D show recovered mesh trajectories alongside ground truth."></a>
       <figcaption>Joint generation of local motion, followed by geometric global recovery. Qualitative comparisons cover both static-camera HO3D and moving-camera HOT3D videos.</figcaption>
     </figure>
-    <div class="abstract"><h2>From video to motion,<br><span>without per-frame pose estimates.</span></h2><p>Occlusion and motion blur make hand reconstruction ambiguous and temporally inconsistent. JoHan learns a joint motion prior directly from video: it generates both 2D and 3D local trajectories, using the evolving 2D geometry to guide 3D reconstruction. Their correspondence then enables geometric recovery of the hand’s position and orientation relative to the camera.</p></div>
-  </section>
-
-  <section id="videos" class="video-section">
-    <div class="wrap">
-      <div class="section-heading"><div><p class="eyebrow">01 / In motion</p><h2>See the reconstruction.</h2></div><p>Generated 2D joints and recovered 3D meshes,<br>overlaid on the input video.</p></div>
-      <div class="video-controls"><div class="tabs" role="tablist" aria-label="Video dataset"><button id="tab-hot3d" type="button" role="tab" aria-selected="true" aria-controls="panel-hot3d" data-tab="hot3d">HOT3D <span>Moving camera</span></button><button id="tab-ho3d" type="button" role="tab" aria-selected="false" aria-controls="panel-ho3d" tabindex="-1" data-tab="ho3d">HO3D <span>Static camera</span></button></div><p class="legend"><span class="legend-pred">●</span> Predicted 2D <span class="legend-gt">●</span> Ground-truth 2D</p></div>
-      <div id="panel-hot3d" class="video-grid" role="tabpanel" aria-labelledby="tab-hot3d">
-        <figure><video controls muted loop playsinline preload="none" poster="assets/hot3d-1.webp" aria-label="HOT3D example one: generated 2D joints and recovered mesh"><source src="assets/hot3d-1.webm" type="video/webm"><source src="assets/hot3d-1.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/hot3d-1.mp4">Download the video</a>.</video><figcaption><strong>HOT3D · Sequence 01</strong><span>2D trajectories / 3D mesh overlay</span></figcaption></figure>
-        <figure><video controls muted loop playsinline preload="none" poster="assets/hot3d-2.webp" aria-label="HOT3D example two: generated 2D joints and recovered mesh"><source src="assets/hot3d-2.webm" type="video/webm"><source src="assets/hot3d-2.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/hot3d-2.mp4">Download the video</a>.</video><figcaption><strong>HOT3D · Sequence 02</strong><span>2D trajectories / 3D mesh overlay</span></figcaption></figure>
-      </div>
-      <div id="panel-ho3d" class="video-grid" role="tabpanel" aria-labelledby="tab-ho3d" hidden>
-        <figure><video controls muted loop playsinline preload="none" poster="assets/ho3d-1.webp" aria-label="HO3D example one: generated 2D joints and recovered mesh"><source src="assets/ho3d-1.webm" type="video/webm"><source src="assets/ho3d-1.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/ho3d-1.mp4">Download the video</a>.</video><figcaption><strong>HO3D · Sequence 01</strong><span>2D trajectories / 3D mesh overlay</span></figcaption></figure>
-        <figure><video controls muted loop playsinline preload="none" poster="assets/ho3d-2.webp" aria-label="HO3D example two: generated 2D joints and recovered mesh"><source src="assets/ho3d-2.webm" type="video/webm"><source src="assets/ho3d-2.mp4" type="video/mp4">Your browser does not support embedded video. <a href="assets/ho3d-2.mp4">Download the video</a>.</video><figcaption><strong>HO3D · Sequence 02</strong><span>2D trajectories / 3D mesh overlay</span></figcaption></figure>
-      </div>
-      <p class="video-note">Left: predicted and ground-truth 2D joints. Right: the reconstructed hand mesh in the camera view. Select a video to play.</p>
-    </div>
+    <div class="abstract"><h2>Abstract</h2><p>Occlusion and motion blur make hand reconstruction ambiguous and temporally inconsistent. JoHan learns a joint motion prior directly from video: it generates both 2D and 3D local trajectories, using the evolving 2D geometry to guide 3D reconstruction. Their correspondence then enables geometric recovery of the hand’s position and orientation relative to the camera.</p></div>
   </section>
 
   <section id="method" class="wrap method-section">

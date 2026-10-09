@@ -1,31 +1,4 @@
 'use strict';
-const tabs = [...document.querySelectorAll('[role="tab"]')];
-function selectTab(tab, focus = false) {
-  for (const other of tabs) {
-    const active = other === tab;
-    other.setAttribute('aria-selected', String(active));
-    other.tabIndex = active ? 0 : -1;
-    const panel = document.getElementById(other.getAttribute('aria-controls'));
-    panel.hidden = !active;
-    if (!active) panel.querySelectorAll('video').forEach(video => video.pause());
-  }
-  if (focus) tab.focus();
-}
-for (const tab of tabs) {
-  tab.addEventListener('click', () => selectTab(tab));
-  tab.addEventListener('keydown', event => {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-    event.preventDefault();
-    const index = tabs.indexOf(tab);
-    const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
-    selectTab(tabs[next], true);
-  });
-}
-document.querySelectorAll('video').forEach(video => {
-  video.addEventListener('play', () => {
-    document.querySelectorAll('video').forEach(other => { if (other !== video) other.pause(); });
-  });
-});
 document.getElementById('copy-citation').addEventListener('click', async event => {
   const button = event.currentTarget;
   const text = document.getElementById('bibtex').textContent;
@@ -41,3 +14,61 @@ document.getElementById('copy-citation').addEventListener('click', async event =
     document.getElementById('copy-citation').textContent = 'Selected — copy manually';
   }
 });
+
+const video = document.getElementById('motion-video');
+const play = document.getElementById('play-motion');
+const progress = document.getElementById('motion-progress');
+const speed = document.getElementById('motion-speed');
+const status = document.getElementById('video-status');
+const options = [...document.querySelectorAll('.sequence-option')];
+let selected = 'hot3d-1';
+let playRequest = 0;
+video.controls = false;
+document.querySelector('.playback').hidden = false;
+const stamp = seconds => `${Math.floor((seconds || 0) / 60)}:${String(Math.floor((seconds || 0) % 60)).padStart(2, '0')}`;
+function updateTime() {
+  const duration = Number.isFinite(video.duration) ? video.duration : 0;
+  progress.value = duration ? Math.round(video.currentTime / duration * 1000) : 0;
+  progress.setAttribute('aria-valuetext', `${stamp(video.currentTime)} of ${stamp(duration)}`);
+  document.getElementById('motion-time').textContent = `${stamp(video.currentTime)} / ${stamp(duration)}`;
+}
+function updatePlay() {
+  play.innerHTML = video.paused ? '▶ <span>Play</span>' : 'Ⅱ <span>Pause</span>';
+  play.setAttribute('aria-label', video.paused ? 'Play motion video' : 'Pause motion video');
+}
+async function startPlayback() {
+  const request = ++playRequest;
+  try { await video.play(); } catch (error) {
+    if (request === playRequest && error.name !== 'AbortError') status.textContent = 'Playback could not start. Try Play again or open the video directly.';
+  }
+}
+play.addEventListener('click', () => { if (video.paused) startPlayback(); else video.pause(); });
+document.getElementById('restart-motion').addEventListener('click', () => { video.currentTime = 0; updateTime(); });
+speed.addEventListener('change', () => { video.playbackRate = Number(speed.value); });
+progress.addEventListener('input', () => { if (Number.isFinite(video.duration)) video.currentTime = video.duration * Number(progress.value) / 1000; });
+video.addEventListener('timeupdate', updateTime);
+video.addEventListener('loadedmetadata', () => { video.playbackRate = Number(speed.value); updateTime(); status.textContent = '2D and 3D views share the same video timeline.'; });
+video.addEventListener('play', updatePlay);
+video.addEventListener('pause', updatePlay);
+video.addEventListener('error', () => { status.textContent = 'Video unavailable. Please reload or try another sequence.'; video.controls = true; });
+video.addEventListener('waiting', () => { status.textContent = 'Loading video…'; });
+video.addEventListener('playing', () => { status.textContent = '2D and 3D views share the same video timeline.'; });
+options.forEach((button, index) => button.addEventListener('click', () => {
+  const next = button.dataset.sequence;
+  if (next === selected) return;
+  ++playRequest;
+  const resume = !video.paused;
+  video.pause(); selected = next;
+  options.forEach(option => option.setAttribute('aria-pressed', String(option === button)));
+  const [dataset, number] = selected.split('-');
+  const label = `${dataset.toUpperCase()} · Sequence ${number.padStart(2, '0')}`;
+  document.getElementById('sequence-name').textContent = label;
+  document.getElementById('camera-label').textContent = dataset === 'hot3d' ? 'Moving camera' : 'Static camera';
+  document.getElementById('sequence-counter').textContent = `${String(index + 1).padStart(2, '0')} / 04`;
+  video.setAttribute('aria-label', `${label}: aligned 2D hand motion and recovered 3D mesh`);
+  video.poster = `assets/${selected}.webp`;
+  video.querySelectorAll('source').forEach(source => { source.src = `assets/${selected}.${source.type === 'video/webm' ? 'webm' : 'mp4'}`; });
+  video.querySelector('a').href = `assets/${selected}.mp4`;
+  video.load(); updateTime(); updatePlay(); status.textContent = 'Loading sequence…';
+  if (resume) startPlayback();
+}));
