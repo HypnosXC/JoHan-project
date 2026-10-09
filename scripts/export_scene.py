@@ -18,7 +18,12 @@ s=np.load(a.slam,allow_pickle=False);g=np.load(a.gt_cache,allow_pickle=False);ha
 frames=hands['frames'];images=sorted(Path(a.images).glob('*.jpg'))
 kframes=s['tstamp'].astype(int)+a.chunk_start
 ids=np.where((kframes>=frames[0])&(kframes<=frames[-1]))[0]
-assert len(ids),f'No depth keyframes in requested range: {kframes.tolist()}'
+if not len(ids):
+ # SLAM creates keyframes only when the camera moves. A static-camera interval
+ # can have none; use nearby recorded observations of the same environment.
+ ids=np.where((kframes>=frames[0]-90)&(kframes<=frames[-1]+90))[0]
+ if len(ids)>3:ids=np.sort(ids[np.argsort(np.abs(kframes[ids]-np.mean(frames)))[:3]])
+assert len(ids),f'No nearby depth keyframes: {kframes.tolist()}'
 if len(ids)>5:ids=ids[np.linspace(0,len(ids)-1,5).round().astype(int)]
 # Exact dataset cameras also generated the GT meshes in this evaluation archive.
 R=g['R_w2c'];t=g['t_w2c'];recovered=(hands['gt_cam_v']-t[frames,None,:])@R[frames]
@@ -68,6 +73,6 @@ cols=np.stack([np.bincount(inv,weights=colors[:,j])/counts for j in range(3)],ax
 assert np.isfinite(pts).all();pts.astype('<f4').tofile(out/'scene-positions.bin');cols.tofile(out/'scene-colors.bin')
 center=min(views,key=lambda v:abs(v['frame']-np.mean(frames)))
 rgb=center['rgb'];rgb=cv2.resize(rgb,(640,round(640*rgb.shape[0]/rgb.shape[1])));cv2.imwrite(str(out/'scene-reference.webp'),cv2.cvtColor(rgb,cv2.COLOR_RGB2BGR),[cv2.IMWRITE_WEBP_QUALITY,85])
-ci=int(center['frame']);cp=-R[ci].T@t[ci];forward=R[ci].T@np.array([0.,0.,1.]);up=R[ci].T@np.array([0.,-1.,0.])
-m={'pointCount':len(pts),'sourceFrames':[v['frame'] for v in views],'referenceFrame':ci-int(frames[0]),'referenceSourceFrame':ci,'units':'metres','depthSource':'Saved HaWoR masked DROID-SLAM depths, using the saved Metric3D scale','registration':'Dataset camera extrinsics in the GT world coordinate frame; hand predictions unchanged','representation':'Partial RGB point cloud, 5 mm voxel fusion; moving hand masks excluded; cross-view depth consistency required where available','cameraRegistrationMeanErrorM':float(err.mean()),'cameraRegistrationMaxErrorM':float(err.max()),'depthScale':float(s['scale']),'depthValidPoints':[int(v['valid'].sum()) for v in views],'consistentPoints':kept,'cameraPosition':cp.tolist(),'cameraTarget':(cp+forward).tolist(),'cameraUp':up.tolist(),'cameraFov':float(np.degrees(2*np.arctan(float(s['img_center'][1])/float(s['img_focal']))))}
+ci=int(frames[len(frames)//2]);cp=-R[ci].T@t[ci];forward=R[ci].T@np.array([0.,0.,1.]);up=R[ci].T@np.array([0.,-1.,0.])
+m={'pointCount':len(pts),'sourceFrames':[v['frame'] for v in views],'referenceFrame':ci-int(frames[0]),'referenceSourceFrame':int(center['frame']),'recordedSourceFrame':ci,'units':'metres','depthSource':'Saved HaWoR masked DROID-SLAM depths, using the saved Metric3D scale','registration':'Dataset camera extrinsics in the GT world coordinate frame; hand predictions unchanged','representation':'Partial RGB point cloud, 5 mm voxel fusion; moving hand masks excluded; cross-view depth consistency required where available','cameraRegistrationMeanErrorM':float(err.mean()),'cameraRegistrationMaxErrorM':float(err.max()),'depthScale':float(s['scale']),'depthValidPoints':[int(v['valid'].sum()) for v in views],'consistentPoints':kept,'cameraPosition':cp.tolist(),'cameraTarget':(cp+forward).tolist(),'cameraUp':up.tolist(),'cameraFov':float(np.degrees(2*np.arctan(float(s['img_center'][1])/float(s['img_focal']))))}
 (out/'scene.json').write_text(json.dumps(m,indent=2)+'\n');print(json.dumps(m),flush=True)
