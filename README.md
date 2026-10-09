@@ -25,7 +25,7 @@ No analytics or external frontend dependencies are used.
 
 ## Interactive HOT3D world-space viewer
 
-The 93-frame P0014_8254f925 example uses existing exported JoHan, HaWoR,
+The 150-frame P0014_24cb3bf0 example uses existing exported JoHan, HaWoR,
 and ground-truth meshes from the first-aligned world-space evaluation.
 Vertex coordinates are preserved in metres, without per-frame recentering.
 The JoHan export includes the saved world-motion smoothing used by that evaluation.
@@ -52,26 +52,34 @@ The saved hand vertex coordinates are unchanged.
 
 ## Real scene context and example selection
 
-The current example spans source frames 1420–1512. It has the smallest mean
-first-aligned W-MPJPE (5.2344 mm) among 477 saved, matched JoHan/HaWoR clips in
-the existing evaluation export. This explicitly selected low-error example is
-not an estimate of average benchmark performance. `scripts/select_world_case.py`
-records its selection without changing, re-aligning or smoothing the saved meshes.
+The current example spans source frames 2761–2910 of P0014_24cb3bf0.
+Selection first requires at least 90 consecutive frames, GT world-space wrist
+maximum pairwise displacement of at least 20 cm, and sampled GT wrist travel
+of at least 30 cm. Travel sums distances every five frames plus the final frame,
+to reduce accumulation of tiny framewise annotation changes. Ranking then uses
+mean first-aligned world-joint error. No prediction is changed by selection.
+
+Of 477 existing matched evaluation clips, 203 pass these motion thresholds.
+The selected clip has the lowest mean W-MPJPE among them: 15.5202 mm, with
+PA-MPJPE 4.6179 mm and camera-space MPJPE 15.7377 mm. Its GT wrist displacement
+is 30.5885 cm and sampled travel is 82.1546 cm. This deliberately selected
+moving example is not an estimate of aggregate benchmark performance.
+`scripts/select_world_case.py` records the ranking and thresholds. The earlier
+minimum-error but nearly stationary 93-frame example remains in Git history.
 
 The scene is a partial RGB point cloud from existing HaWoR masked DROID-SLAM
 inverse depths, using their saved Metric3D metric scale. No new depth or hand
-inference is performed. As this static-camera interval contains no saved depth
-keyframe, nearby source frames 1364, 1382 and 1588 provide the scene observations.
-Dataset camera extrinsics register these observations to the GT world frame;
-the scene is **not** an output of JoHan. The recorded-view button uses the dataset
-camera at hand-animation frame 46 (source frame 1466).
+inference is performed. Source keyframes 2779, 2868 and 2898 all lie inside the
+selected motion interval. Dataset camera extrinsics register observations to
+the GT world frame; the scene is **not** an output of JoHan. The recorded-view
+button uses the dataset camera at animation frame 75 (source frame 2836).
 
 The exporter reproduces SLAM's resize-and-crop intrinsics, masks moving hands,
 rejects depth discontinuities, requires agreement from a second view, and fuses
 points into 5 mm voxels. Missing or unreliable surfaces stay absent. Temporal
 changes in other scene objects and errors in estimated depth may remain.
 Camera registration checked against archived GT meshes has mean/max residual
-0.128/0.388 mm; this checks coordinate conversion, not scene reconstruction accuracy.
-Only geometry, RGB colours and a source reference image are published. See
-`assets/world/scene/scene.json` for exact provenance and `scripts/export_scene.py`
-for the conversion. Existing hand vertex arrays are left untouched by scene fusion.
+0.107/0.441 mm; this checks coordinate conversion, not scene accuracy.
+Only geometry, RGB colours and a reference image are published. See
+`assets/world/scene/scene.json` for provenance and `scripts/export_scene.py`
+for the conversion. Scene fusion does not change the hand vertex arrays.

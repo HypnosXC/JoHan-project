@@ -10,6 +10,11 @@ document.querySelector('#world-load').addEventListener('click',async function(){
  const base='assets/world/';
  const get=async(name,json=false)=>{const r=await fetch(base+name);if(!r.ok)throw new Error('Could not load '+name);return json?r.json():r.arrayBuffer();};
  const meta=await get('sequence.json',true), faces=new Uint16Array(await get('faces.bin'));
+ const detail=[`Selected HOT3D sequence ${meta.sequence}`,`${meta.frameCount} frames`];
+ if(meta.gtWristDisplacementM!=null)detail.push(`GT wrist displacement ${(meta.gtWristDisplacementM*100).toFixed(1)} cm`);
+ if(meta.selectedClipMeanWMPJPE_mm!=null)detail.push(`JoHan W-MPJPE ${meta.selectedClipMeanWMPJPE_mm.toFixed(2)} mm`);
+ document.querySelector('#world-case-summary').textContent=detail.join(' · ')+'. Selected example, not an aggregate benchmark result.';
+
  const scene=new THREE.Scene(); scene.background=new THREE.Color('#f4f7fa');
  renderer=new THREE.WebGLRenderer({antialias:true});renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.setPixelRatio(Math.min(devicePixelRatio,2));host.appendChild(renderer.domElement);
  renderer.domElement.setAttribute('aria-label','Interactive world-space hand mesh. Drag to rotate; scroll or pinch to zoom.');

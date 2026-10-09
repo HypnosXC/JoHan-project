@@ -1,44 +1,44 @@
 {
-  "pointCount": 197279,
+  "pointCount": 239276,
   "sourceFrames": [
-    1364,
-    1382,
-    1588
+    2779,
+    2868,
+    2898
   ],
-  "referenceFrame": 46,
-  "referenceSourceFrame": 1382,
-  "recordedSourceFrame": 1466,
+  "referenceFrame": 75,
+  "referenceSourceFrame": 2868,
+  "recordedSourceFrame": 2836,
   "units": "metres",
   "depthSource": "Saved HaWoR masked DROID-SLAM depths, using the saved Metric3D scale",
   "registration": "Dataset camera extrinsics in the GT world coordinate frame; hand predictions unchanged",
   "representation": "Partial RGB point cloud, 5 mm voxel fusion; moving hand masks excluded; cross-view depth consistency required where available",
-  "cameraRegistrationMeanErrorM": 0.00012797367526218295,
-  "cameraRegistrationMaxErrorM": 0.0003876125847455114,
-  "depthScale": 0.7355335652828217,
+  "cameraRegistrationMeanErrorM": 0.00010747011401690543,
+  "cameraRegistrationMaxErrorM": 0.0004406288207974285,
+  "depthScale": 0.7962628304958344,
   "depthValidPoints": [
-    177321,
-    173416,
-    171586
+    169420,
+    171582,
+    173007
   ],
   "consistentPoints": [
-    84265,
-    106337,
-    70377
+    103396,
+    113152,
+    91839
   ],
   "cameraPosition": [
-    0.05410842224955559,
-    -0.022008901461958885,
-    -0.13866974413394928
+    0.178667813539505,
+    -0.018988844007253647,
+    -0.19507059454917908
   ],
   "cameraTarget": [
-    -0.7449181862175465,
-    -0.4890016969293356,
-    -0.5174497216939926
+    -0.7865919768810272,
+    -0.079346414655447,
+    -0.4492957592010498
   ],
   "cameraUp": [
-    -0.4921914041042328,
-    0.14610134065151215,
-    0.8581387400627136
+    -0.2567421495914459,
+    0.03831340745091438,
+    0.9657201766967773
   ],
-  "cameraFov": 98.32890189901741
+  "cameraFov": 98.23894968440548
 }
