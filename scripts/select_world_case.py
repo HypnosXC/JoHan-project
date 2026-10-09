@@ -14,9 +14,9 @@ def units(d):
   rows.append(dict(video=str(vids[i]),start=int(f[0]),end=int(f[-1]),n=int(n),w=float(w[s:e].mean()),pa=float(pa[s:e].mean()),mpjpe=float(mp[s:e].mean()),offset=[s,e],frames=f.tolist()))
  return rows
 rows=sorted(units(o),key=lambda r:r['w']);br={(r['video'],tuple(r['frames'])):r for r in units(h)}
-long=[r for r in rows if r['n']>=100 and (r['video'],tuple(r['frames'])) in br]
+long=[r for r in rows if (r['video'],tuple(r['frames'])) in br]
 assert long
-report={'criterion':'Lowest JoHan mean first-aligned world-joint error among saved matched clips with at least 100 frames','allClips':len(rows),'eligibleClips':len(long),'overallMinimum':rows[0],'top10':long[:10]}
+report={'criterion':'Lowest JoHan mean first-aligned world-joint error among all saved matched clips','allClips':len(rows),'eligibleClips':len(long),'overallMinimum':rows[0],'top10':long[:10]}
 (out/'selection.json').write_text(json.dumps(report,indent=2)+'\n')
 r=long[0];b=br[(r['video'],tuple(r['frames']))];s,e=r['offset'];hs,he=b['offset']
 arrays={'video':np.array(r['video']),'frames':np.array(r['frames']),'faces':np.load(a.faces_archive,allow_pickle=False)['faces']}
