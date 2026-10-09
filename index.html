@@ -10,10 +10,10 @@
   <meta property="og:type" content="website">
   <title>JoHan | Video-Conditioned Generative Joint 2D–3D Hand Motion Recovery</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="style.css?v=6">
+  <link rel="stylesheet" href="style.css?v=7">
   <script src="script.js?v=3" defer></script>
   <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js"}}</script>
-  <script type="module" src="world-viewer.js?v=2"></script>
+  <script type="module" src="world-viewer.js?v=3"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -55,21 +55,23 @@
   </section>
 
   <section id="world" class="wrap world-section" aria-labelledby="world-title">
-    <div class="section-heading"><div><p class="eyebrow">Interactive reconstruction</p><h2 id="world-title">Hand motion, in world space.</h2></div><p>Rotate the view. Explore the trajectory.<br>Real HOT3D predictions, across 116 frames.</p></div>
+    <div class="section-heading"><div><p class="eyebrow">Interactive reconstruction</p><h2 id="world-title">Hand motion, in world space.</h2></div><p>Rotate the view. Explore the trajectory.<br>A selected HOT3D sequence, in a reconstructed scene.</p></div>
     <div class="world-viewer">
       <div class="world-options" role="group" aria-label="Visible reconstructions">
         <label class="world-ours"><input type="checkbox" data-world-model="ours" checked disabled> JoHan</label>
-        <label class="world-gt"><input type="checkbox" data-world-model="gt" disabled> Ground truth</label>
+        <label class="world-gt"><input type="checkbox" data-world-model="gt" checked disabled> Ground truth</label>
         <label class="world-hawor"><input type="checkbox" data-world-model="hawor" disabled> HaWoR</label>
         <label><input type="checkbox" id="world-trail" checked> Wrist trajectory</label>
-        <label><input type="checkbox" id="world-environment" checked disabled> Reference environment</label>
-        <button type="button" id="world-reset" disabled>Reset view</button>
+        <label><input type="checkbox" id="world-scene" checked disabled> Reconstructed scene</label>
+        <label><input type="checkbox" id="world-environment" disabled> Reference grid</label>
+        <button type="button" id="world-recorded" disabled>Recorded view</button><button type="button" id="world-reset" disabled>Focus hand</button>
       </div>
-      <div id="world-canvas"><button type="button" id="world-load">Explore in 3D ↗</button><span class="world-axis-note">World coordinates · metres<br>Reference grid · 10 cm spacing</span></div>
-      <div class="world-controls"><button type="button" id="world-play" disabled>Play</button><input type="range" id="world-frame" min="0" max="115" value="0" step="1" disabled aria-label="3D motion frame"><output id="world-count">Frame 0 / 115</output><label>Playback <select id="world-fps"><option value="15" selected>15 fps</option><option value="30">30 fps</option><option value="5">5 fps</option></select></label></div>
+      <div id="world-canvas"><button type="button" id="world-load">Explore in 3D ↗</button><span class="world-axis-note">World coordinates · metres<br>RGB scene point cloud</span></div>
+      <div class="world-controls"><button type="button" id="world-play" disabled>Play</button><input type="range" id="world-frame" min="0" max="92" value="0" step="1" disabled aria-label="3D motion frame"><output id="world-count">Frame 0 / 92</output><label>Playback <select id="world-fps"><option value="15" selected>15 fps</option><option value="30">30 fps</option><option value="5">5 fps</option></select></label></div>
+      <p id="scene-status" role="status">Scene context uses recorded RGB, saved SLAM depths, and dataset camera poses.</p>
       <p id="world-status" role="status">Load the interactive mesh to rotate, zoom, and play the sequence.</p>
     </div>
-    <p class="showcase-note">Selected HOT3D sequence P0002_65085bfc. Meshes retain their world-space motion in the first-aligned evaluation coordinate frame; no per-frame recentering is applied. Lines trace the wrist trajectory. The reference plane and shadows provide spatial context; they do not reconstruct the physical scene. This sequence is independent of the videos above.</p>
+    <p class="showcase-note">Selected low-error HOT3D sequence P0014_8254f925 (93 frames; JoHan mean W-MPJPE 5.23 mm). This is a selected example, not an aggregate benchmark result. Meshes retain their world-space motion in the first-aligned evaluation coordinate frame; no per-frame recentering is applied. Lines trace the wrist trajectory. Scene context is reconstructed from recorded RGB and saved SLAM depths, registered with dataset camera poses. It is a partial reconstruction of visible surfaces, not an output of JoHan. The optional grid is only a spatial reference. This sequence is independent of the videos above.</p>
   </section>
 
   <section id="overview" class="wrap teaser-section" aria-label="Overview">

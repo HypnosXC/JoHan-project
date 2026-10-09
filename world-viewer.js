@@ -26,10 +26,10 @@ document.querySelector('#world-load').addEventListener('click',async function(){
   const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:colors[key],roughness:.6,metalness:.02,side:THREE.DoubleSide}));mesh.frustumCulled=false;mesh.castShadow=true;mesh.receiveShadow=true;
   const lineGeo=new THREE.BufferGeometry();lineGeo.setAttribute('position',new THREE.BufferAttribute(wrists,3));
   const line=new THREE.Line(lineGeo,new THREE.LineBasicMaterial({color:colors[key],transparent:true,opacity:.7}));
-  scene.add(mesh,line);models[key]={vertices,mesh,line};mesh.visible=line.visible=key==='ours';
+  scene.add(mesh,line);models[key]={vertices,mesh,line};mesh.visible=line.visible=document.querySelector(`[data-world-model="${key}"]`).checked;
  }
  // A fixed reference plane provides scale; it is not estimated scene geometry.
- const environment=new THREE.Group();scene.add(environment);
+ const environment=new THREE.Group();environment.visible=document.querySelector('#world-environment').checked;scene.add(environment);
  const referenceBounds=new THREE.Box3();
  for(const model of Object.values(models)){const referenceVertices=model.vertices;
  for(let i=0;i<referenceVertices.length;i+=3)referenceBounds.expandByPoint(new THREE.Vector3(referenceVertices[i],referenceVertices[i+1],referenceVertices[i+2]));}
@@ -46,6 +46,7 @@ document.querySelector('#world-load').addEventListener('click',async function(){
  document.querySelector('#world-environment').disabled=false;
  document.querySelector('#world-environment').addEventListener('change',e=>{environment.visible=e.target.checked;});
  function reset(){
+  camera.fov=38;camera.up.set(0,0,1);camera.updateProjectionMatrix();
   const bounds=new THREE.Box3();
   for(const m of Object.values(models))if(m.mesh.visible){const v=m.vertices;for(let i=0;i<v.length;i+=3)bounds.expandByPoint(new THREE.Vector3(v[i],v[i+1],v[i+2]));}
   if(bounds.isEmpty())return;
@@ -66,6 +67,26 @@ document.querySelector('#world-load').addEventListener('click',async function(){
  document.querySelector('#world-trail').addEventListener('change',e=>{for(const m of Object.values(models))m.line.visible=m.mesh.visible&&e.target.checked;});
  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();};new ResizeObserver(resize).observe(host);resize();reset();
  renderer.setAnimationLoop(now=>{const delta=Math.min((now-last)/1000,.1);last=now;if(playing&&!document.hidden){elapsed+=delta;const step=1/Number(document.querySelector('#world-fps').value);if(elapsed>=step){const count=Math.floor(elapsed/step);show((frame+count)%meta.frameCount);elapsed%=step;}}controls.update();renderer.render(scene,camera);});
+ status.textContent='Loading reconstructed scene…';
+ // Scene reconstruction is a separate artifact: a failure must not disable hand playback.
+ try {
+  const info=await get('scene/scene.json',true);
+  const [pb,cb]=await Promise.all([get('scene/scene-positions.bin'),get('scene/scene-colors.bin')]);
+  const positions=new Float32Array(pb),srgb=new Uint8Array(cb),linear=new Float32Array(srgb.length);
+  if(positions.length!==info.pointCount*3||srgb.length!==positions.length)throw new Error('Invalid scene buffer lengths');
+  for(let i=0;i<srgb.length;i++){const c=srgb[i]/255;linear[i]=c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);}
+  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(positions,3));geo.setAttribute('color',new THREE.BufferAttribute(linear,3));
+  const material=new THREE.PointsMaterial({size:.007,vertexColors:true,sizeAttenuation:true});
+  material.onBeforeCompile=shader=>{shader.fragmentShader=shader.fragmentShader.replace('#include <clipping_planes_fragment>','#include <clipping_planes_fragment>\nif (distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;');};
+  const cloud=new THREE.Points(geo,material);scene.add(cloud);
+  const toggle=document.querySelector('#world-scene');toggle.disabled=false;cloud.visible=toggle.checked;
+  toggle.addEventListener('change',()=>{cloud.visible=toggle.checked;});
+  const recorded=document.querySelector('#world-recorded');recorded.disabled=false;
+  const recordedCamera=()=>{camera.position.fromArray(info.cameraPosition);camera.up.fromArray(info.cameraUp);controls.target.fromArray(info.cameraTarget);camera.fov=THREE.MathUtils.radToDeg(2*Math.atan(Math.tan(THREE.MathUtils.degToRad(info.cameraFov/2))/Math.min(camera.aspect,1)));camera.updateProjectionMatrix();controls.update();};
+  recorded.addEventListener('click',()=>{playing=false;play.textContent='Play';show(info.referenceFrame);recordedCamera();});
+  recordedCamera();
+  document.querySelector('#scene-status').textContent=`Scene: ${info.sourceFrames.length} depth keyframes · ${info.pointCount.toLocaleString()} coloured points · dataset camera registration`;
+ }catch(error){document.querySelector('#world-scene').checked=false;document.querySelector('#scene-status').textContent='Scene data could not load. Hand motion remains available.';console.error(error);}
  this.hidden=true;initialized=true;status.textContent='Drag to orbit · Scroll or pinch to zoom · Right-drag to pan';
  }catch(error){renderer?.dispose();host.querySelector('canvas')?.remove();status.textContent='Unable to load the 3D viewer. Please check WebGL support and try again.';this.disabled=false;console.error(error);}
 });
