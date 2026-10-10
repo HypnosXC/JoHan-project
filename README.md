@@ -1,5 +1,9 @@
 # JoHan project page
 
+Project page: https://hypnosxc.github.io/JoHan-project/
+
+Code repository: https://github.com/HypnosXC/JoHan
+
 Standalone project website for **Video-Conditioned Generative Joint 2D–3D Hand Motion Recovery**.
 
 The site is plain HTML, CSS and JavaScript. GitHub Pages serves the repository root from `main`; `.nojekyll` disables Jekyll processing.
